@@ -23,10 +23,10 @@ export default function ContactPage() {
         <div className="mx-auto max-w-4xl">
           <div className="grid gap-12 lg:grid-cols-5 lg:gap-16">
             <div className="lg:col-span-2">
-              <h1 className="text-3xl font-bold text-[var(--brand-blue)] md:text-4xl lg:text-5xl">
+              <h1 className="max-w-3xl text-[2rem] font-bold text-[var(--brand-blue)] md:text-[2.5rem] lg:text-[3rem]">
                 {site.contactPage.headline}
               </h1>
-              <p className="mt-6 text-lg text-[var(--text)]">
+              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--text)]">
                 {site.contactPage.body}
               </p>
               {site.contactPage.reassurance && (
