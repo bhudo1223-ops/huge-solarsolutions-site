@@ -1,0 +1,339 @@
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { submitLead, type LeadFormData } from "@/src/lib/submit";
+import { site } from "@/src/content/site";
+import { Button } from "./Button";
+import { Input } from "./Input";
+import { Select } from "./Select";
+import { Textarea } from "./Textarea";
+import { FormField } from "./FormField";
+
+const schema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  email: z.string().email("Valid email is required"),
+  buildingAddress: z.string().min(1, "Building address is required"),
+  buildingType: z.string().min(1, "Building type is required"),
+  phone: z.string().optional(),
+  company: z.string().optional(),
+  roofSize: z.string().optional(),
+  roofAge: z.string().optional(),
+  roofType: z.string().optional(),
+  utilityProvider: z.string().optional(),
+  utilityUsage: z.string().optional(),
+  willingToShareBills: z.string().optional(),
+  motivations: z.array(z.string()).optional(),
+  batteryInterest: z.string().optional(),
+  communitySolarInterest: z.string().optional(),
+  nonBindingAgreed: z.boolean().refine((v) => v === true, { message: "You must agree to this" }),
+  feasibilityAuthorized: z.boolean().refine((v) => v === true, { message: "You must agree to this" }),
+  contactMethod: z.string().optional(),
+  preferredTime: z.string().optional(),
+});
+
+type FormData = z.infer<typeof schema>;
+
+export function SubmitBuildingForm() {
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "failure">("idle");
+  const [mailtoFallback, setMailtoFallback] = useState<string>("");
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      nonBindingAgreed: false,
+      feasibilityAuthorized: false,
+    },
+  });
+
+  const motivations = watch("motivations") ?? [];
+
+  const onSubmit = async (data: FormData) => {
+    setStatus("loading");
+    const payload: LeadFormData = {
+      fullName: data.fullName,
+      email: data.email,
+      buildingAddress: data.buildingAddress,
+      buildingType: data.buildingType,
+      phone: data.phone,
+      company: data.company,
+      roofSize: data.roofSize,
+      roofAge: data.roofAge,
+      roofType: data.roofType,
+      utilityProvider: data.utilityProvider,
+      utilityUsage: data.utilityUsage,
+      willingToShareBills: data.willingToShareBills,
+      motivations: data.motivations?.length ? data.motivations : undefined,
+      batteryInterest: data.batteryInterest,
+      communitySolarInterest: data.communitySolarInterest,
+      nonBindingAgreed: true,
+      feasibilityAuthorized: true,
+      contactMethod: data.contactMethod,
+      preferredTime: data.preferredTime,
+    };
+
+    const result = await submitLead(payload);
+
+    if (result.success) {
+      setStatus("success");
+    } else {
+      setMailtoFallback(result.mailtoFallback);
+      setStatus("failure");
+    }
+  };
+
+  if (status === "success") {
+    return (
+      <div className="rounded-xl border border-green-200 bg-green-50 p-8 text-center dark:border-green-900 dark:bg-green-950/30">
+        <h3 className="text-xl font-semibold text-green-900 dark:text-green-100">
+          Thank You
+        </h3>
+        <p className="mt-4 text-green-800 dark:text-green-200">
+          Your building submission has been received. We&apos;ll review the details and
+          reach out shortly.
+        </p>
+      </div>
+    );
+  }
+
+  if (status === "failure") {
+    return (
+      <div className="rounded-xl border border-amber-200 bg-amber-50 p-8 dark:border-amber-900 dark:bg-amber-950/30">
+        <h3 className="text-xl font-semibold text-amber-900 dark:text-amber-100">
+          Submission could not be sent automatically
+        </h3>
+        <p className="mt-4 text-amber-800 dark:text-amber-200">
+          Please use the button below to send your submission via email.
+        </p>
+        <a
+          href={mailtoFallback}
+          className="mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--brand-blue)] px-6 py-3 font-semibold text-white hover:bg-[var(--brand-blue-hover)]"
+        >
+          Send via Email
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      {/* Required */}
+      <div className="space-y-6">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          Contact Information
+        </h2>
+        <FormField label="Full name" htmlFor="fullName" required error={errors.fullName?.message}>
+          <Input id="fullName" {...register("fullName")} placeholder="Jane Doe" autoComplete="name" />
+        </FormField>
+        <FormField label="Email" htmlFor="email" required error={errors.email?.message}>
+          <Input
+            id="email"
+            type="email"
+            {...register("email")}
+            placeholder="jane@example.com"
+            autoComplete="email"
+          />
+        </FormField>
+        <FormField label="Phone" htmlFor="phone">
+          <Input id="phone" type="tel" {...register("phone")} placeholder="(555) 123-4567" autoComplete="tel" />
+        </FormField>
+        <FormField label="Company / Organization" htmlFor="company">
+          <Input id="company" {...register("company")} placeholder="Acme Corp" />
+        </FormField>
+      </div>
+
+      <div className="space-y-6">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          Building Details
+        </h2>
+        <FormField label="Building address" htmlFor="buildingAddress" required error={errors.buildingAddress?.message}>
+          <Textarea
+            id="buildingAddress"
+            {...register("buildingAddress")}
+            placeholder="123 Main St, City, State ZIP"
+            rows={2}
+          />
+        </FormField>
+        <FormField label="Building type" htmlFor="buildingType" required error={errors.buildingType?.message}>
+          <Select id="buildingType" {...register("buildingType")}>
+            <option value="">Select...</option>
+            {site.form.buildingTypes.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+        <FormField
+          label="Approximate roof size"
+          htmlFor="roofSize"
+          help="Square feet or &quot;unknown&quot;"
+        >
+          <Input id="roofSize" {...register("roofSize")} placeholder="e.g. 50,000 sq ft or unknown" />
+        </FormField>
+        <FormField label="Roof age" htmlFor="roofAge">
+          <Select id="roofAge" {...register("roofAge")}>
+            <option value="">Select...</option>
+            {site.form.roofAge.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+        <FormField label="Roof type" htmlFor="roofType">
+          <Select id="roofType" {...register("roofType")}>
+            <option value="">Select...</option>
+            {site.form.roofType.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+      </div>
+
+      <div className="space-y-6">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          Utility & Usage
+        </h2>
+        <FormField label="Utility provider" htmlFor="utilityProvider">
+          <Input id="utilityProvider" {...register("utilityProvider")} placeholder="e.g. Xcel Energy" />
+        </FormField>
+        <FormField
+          label="Estimated monthly bill or annual usage"
+          htmlFor="utilityUsage"
+          help="e.g. $5,000/mo or 500,000 kWh/year"
+        >
+          <Input id="utilityUsage" {...register("utilityUsage")} placeholder="Optional" />
+        </FormField>
+        <FormField label="Willing to share utility bills?" htmlFor="willingToShareBills">
+          <Select id="willingToShareBills" {...register("willingToShareBills")}>
+            <option value="">Select...</option>
+            {site.form.willingToShare.map((w) => (
+              <option key={w} value={w}>
+                {w}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+      </div>
+
+      <div className="space-y-6">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          Interest
+        </h2>
+        <FormField label="Primary motivation(s)" htmlFor="motivations">
+          <div className="space-y-2">
+            {site.form.motivations.map((m) => (
+              <label key={m} className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  value={m}
+                  {...register("motivations")}
+                  className="h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 dark:border-zinc-600 dark:focus:ring-zinc-100"
+                />
+                <span className="text-sm text-zinc-700 dark:text-zinc-300">{m}</span>
+              </label>
+            ))}
+          </div>
+        </FormField>
+        <FormField label="Battery interest" htmlFor="batteryInterest">
+          <Select id="batteryInterest" {...register("batteryInterest")}>
+            <option value="">Select...</option>
+            {site.form.batteryInterest.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+        <FormField label="Community solar hosting interest" htmlFor="communitySolarInterest">
+          <Select id="communitySolarInterest" {...register("communitySolarInterest")}>
+            <option value="">Select...</option>
+            {site.form.communitySolarInterest.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+      </div>
+
+      <div className="space-y-6">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          Contact Preference
+        </h2>
+        <FormField label="Preferred contact method" htmlFor="contactMethod">
+          <Select id="contactMethod" {...register("contactMethod")}>
+            <option value="">Select...</option>
+            {site.form.contactMethod.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+        <FormField label="Preferred time" htmlFor="preferredTime">
+          <Select id="preferredTime" {...register("preferredTime")}>
+            <option value="">Select...</option>
+            {site.form.preferredTime.map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+      </div>
+
+      <div className="space-y-6 rounded-lg border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900/50">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          Permissions & Disclosures
+        </h2>
+        <div className="space-y-1.5">
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="nonBindingAgreed"
+              {...register("nonBindingAgreed")}
+              className="mt-1 h-4 w-4 shrink-0 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 dark:border-zinc-600 dark:focus:ring-zinc-100"
+            />
+            <span className="text-sm text-zinc-700 dark:text-zinc-300">
+              This submission is non-binding. <span className="text-red-500">*</span>
+            </span>
+          </label>
+          {errors.nonBindingAgreed && (
+            <p className="text-sm text-red-500">{errors.nonBindingAgreed.message}</p>
+          )}
+        </div>
+        <div className="space-y-1.5">
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="feasibilityAuthorized"
+              {...register("feasibilityAuthorized")}
+              className="mt-1 h-4 w-4 shrink-0 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 dark:border-zinc-600 dark:focus:ring-zinc-100"
+            />
+            <span className="text-sm text-zinc-700 dark:text-zinc-300">
+              I authorize {site.legalEntity} to perform a preliminary feasibility evaluation for this site. <span className="text-red-500">*</span>
+            </span>
+          </label>
+          {errors.feasibilityAuthorized && (
+            <p className="text-sm text-red-500">{errors.feasibilityAuthorized.message}</p>
+          )}
+        </div>
+      </div>
+
+      <Button type="submit" loading={status === "loading"}>
+        Submit Building
+      </Button>
+    </form>
+  );
+}
