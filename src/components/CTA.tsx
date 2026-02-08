@@ -13,7 +13,7 @@ export function CTA({
   variant = "primary",
 }: CTAProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--brand-blue)] focus:ring-offset-2";
+    "btn-cta shrink-0 focus:outline-none focus:ring-2 focus:ring-[var(--brand-blue)] focus:ring-offset-2";
   const styles =
     variant === "primary"
       ? "cta-amber"

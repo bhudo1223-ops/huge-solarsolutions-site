@@ -1,6 +1,7 @@
 /**
- * Content source of truth for Huge Solar Solutions
- * Edit copy, headlines, and contact info here.
+ * Edit site copy here.
+ * All headlines, body text, and section content live in this file.
+ * Do not hardcode copy in components—import from site.
  */
 
 export const site = {
@@ -17,7 +18,7 @@ export const site = {
   nav: {
     main: [
       { href: "/", label: "Home" },
-      { href: "/submit", label: "Submit a Building" },
+      { href: "/submit", label: "Evaluate a Building" },
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
     ],
@@ -29,73 +30,103 @@ export const site = {
   },
 
   hero: {
-    headline: "Commercial rooftop solar—evaluated fast.",
+    headline: "Evaluate your rooftop solar potential.",
     subhead:
-      "Preliminary roof + utility feasibility for warehouses, schools, and industrial roofs. Designed for clarity, not paperwork.",
+      "Get a clear estimate of system size and savings for warehouses, schools, and industrial roofs—installed at no capital cost through a long-term power agreement.",
     cta: "Submit a Building",
     ctaSecondary: "How it works",
-    trustLine: "Preliminary evaluation. No obligation.",
+    trustLine: "Fast turnaround. Clear next steps.",
   },
 
   process: {
-    headline: "How it works",
-    intro: "From submission to installation, we guide you through each step with clarity and no obligation.",
+    headline: "From review to operation",
+    intro: "We handle the complexity. You make informed decisions at every stage—with zero obligation until contract signing.",
     steps: [
       {
-        title: "Submit building details",
-        description: "Tell us about your property. We capture key details for an initial feasibility screen.",
+        title: "Initial property review",
+        description:
+          "Share your address and basic details. We confirm roof fit and project direction.",
       },
       {
-        title: "We review roof + utility feasibility",
-        description: "Imaging + data you share. We assess roof area, shading, utility rates, and interconnection.",
+        title: "Technical + utility review",
+        description:
+          "We estimate layout, shading, and interconnection path using satellite and utility information.",
       },
       {
-        title: "You get a summary + next steps",
-        description: "Receive a preliminary savings estimate and discuss PPA or ownership options.",
+        title: "Savings summary",
+        description:
+          "You receive a clear estimate of size, savings, and pricing options.",
       },
       {
-        title: "Engineering + interconnection support",
-        description: "Full engineering review and utility interconnection planning.",
+        title: "Engineering + construction",
+        description:
+          "If you proceed, we manage engineering, utility coordination, permits, and installation.",
       },
       {
-        title: "Install + monitoring",
-        description: "Installation and ongoing monitoring—partner dashboard access included.",
+        title: "Monitoring + support",
+        description:
+          "We provide ongoing system monitoring and reporting.",
       },
     ],
   },
 
   whatWeEvaluate: {
     headline: "What we evaluate",
-    intro: "Our preliminary assessment covers the key factors that shape feasibility and savings.",
+    intro: "We review the key factors that shape system size, savings, and next steps.",
     items: [
-      "Roof area & layout",
-      "Shading/obstructions (high level)",
-      "Structural flags (non-engineering screening only)",
-      "Utility rates/usage (if shared)",
-      "Interconnection constraints (high level)",
-      "Incentives & economics (high level)",
+      "Usable roof area and structural layout",
+      "Roof condition and loading considerations",
+      "Utility interconnection requirements",
+      "Shading and obstructions",
+      "Rate structure and energy usage if shared",
+      "Incentives and project economics",
     ],
   },
 
   whySolar: {
-    headline: "Why owners & tenants like it",
-    intro: "Commercial solar delivers clear benefits for property owners and their tenants.",
+    headline: "Why property owners choose us",
+    intro:
+      "We cut energy costs and keep your involvement minimal. No capital outlay, no financing headaches, no ongoing oversight. You get savings without the complexity.",
     items: [
-      { title: "Lower energy costs", desc: "Reduce electricity spend with predictable solar generation." },
-      { title: "Predictable pricing", desc: "PPA and ownership options with no jargon." },
-      { title: "Tenant attraction / ESG", desc: "Meet sustainability goals and attract tenants." },
-      { title: "Long-term asset value", desc: "Build equity through a modern energy asset." },
+      {
+        title: "Lower energy costs",
+        desc: "Lock in below-market electricity rates over the long term. Reduce operating expenses without adding work.",
+      },
+      {
+        title: "Clear pricing",
+        desc: "You see the numbers upfront. No surprises or hidden fees—just transparent terms.",
+      },
+      {
+        title: "Tenant appeal and sustainability",
+        desc: "Solar helps attract tenants and supports sustainability goals. A win for leasing and reputation.",
+      },
+      {
+        title: "Stronger asset value",
+        desc: "Add a revenue-generating improvement with minimal operational lift.",
+      },
+      {
+        title: "Financing handled",
+        desc: "We structure third-party financing and power purchase options. Install solar with no capital outlay.",
+      },
+      {
+        title: "Hands-off execution",
+        desc: "We manage project development, financing, and ongoing oversight. You stay focused on your property—not on running a solar project.",
+      },
     ],
   },
 
   ctaBand: {
     headline: "Submit a Building",
-    subhead: "Get a preliminary evaluation and a clear next step.",
+    subhead: "See your solar savings potential. Results in 48 hours.",
   },
 
   about: {
     headline: "About Huge Solar Solutions",
-    body: "Huge Solar Solutions focuses on commercial and institutional solar development. We provide clear, no-obligation preliminary evaluations so building owners and representatives can understand feasibility early—without lengthy PDF forms or back-and-forth. Our process is straightforward: submit your building, we assess feasibility, and you get a preliminary savings estimate and structure options. We emphasize process clarity and commercial focus.",
+    body: [
+      "Huge Solar Solutions develops and finances commercial and institutional rooftop solar projects. We help building owners and asset managers understand whether solar is a good fit early in the process, before time or capital is committed.",
+      "Our approach is straightforward. Owners submit basic building information, and we review roof capacity, utility structure, and overall project value. We then provide a clear estimate of system size, potential savings, and practical next steps.",
+      "If a project moves forward, we manage financing and development from start to finish. This allows owners and tenants to access long-term energy savings with no upfront installation cost and minimal operational involvement.",
+    ],
   },
 
   contactPage: {
@@ -106,8 +137,7 @@ export const site = {
   },
 
   footer: {
-    disclaimer:
-      "Preliminary estimates only. Subject to site conditions, structural review, and utility interconnection.",
+    disclaimer: "",
   },
 
   form: {

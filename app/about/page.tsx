@@ -22,11 +22,20 @@ export default function AboutPage() {
           <h1 className="max-w-3xl text-[2rem] font-bold text-[var(--brand-blue)] md:text-[2.5rem]">
             {site.about.headline}
           </h1>
-          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[var(--text)]">
-            {site.about.body}
-          </p>
-          <div className="mt-12">
+          {Array.isArray(site.about.body) ? (
+            site.about.body.map((para, i) => (
+              <p key={i} className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--text)] first:mt-8">
+                {para}
+              </p>
+            ))
+          ) : (
+            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[var(--text)]">
+              {site.about.body}
+            </p>
+          )}
+          <div className="mt-12 flex flex-wrap gap-4">
             <CTA href="/submit" />
+            <CTA href="/contact" text="Get in contact" variant="outline" />
           </div>
         </div>
       </Section>

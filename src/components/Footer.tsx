@@ -37,9 +37,11 @@ export function Footer() {
             </a>
           </div>
 
-          <p className="mt-6 max-w-xl text-xs text-white/70">
-            {site.footer.disclaimer}
-          </p>
+          {site.footer.disclaimer && (
+            <p className="mt-6 max-w-xl text-xs text-white/70">
+              {site.footer.disclaimer}
+            </p>
+          )}
 
           <p className="mt-4 text-xs text-white/70">
             © {year} {site.legalEntity}

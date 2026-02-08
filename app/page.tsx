@@ -30,10 +30,10 @@ export default function HomePage() {
       <Section id="how-it-works" className="bg-white">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
-            <h2 className="text-2xl font-bold text-[var(--brand-blue)] md:text-3xl">
+            <h2 className="max-w-3xl text-[2.2rem] font-bold text-[var(--brand-blue)] md:text-[2.31rem] lg:text-[2.48rem]">
               {site.process.headline}
             </h2>
-            <p className="mt-6 text-lg text-[var(--text)]">
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--text)]">
               {site.process.intro}
             </p>
             <div className="mt-8 overflow-hidden rounded-lg border border-[var(--border)] shadow-[var(--shadow)]">
@@ -76,11 +76,11 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-black/50" aria-hidden />
         <div className="relative mx-auto flex justify-center px-4 py-12 sm:py-16">
-          <div className="w-full max-w-2xl rounded-xl border-2 border-[var(--brand-blue)]/20 bg-white/95 px-8 py-16 text-center shadow-[var(--shadow-sm)] backdrop-blur-sm">
-            <h2 className="text-2xl font-bold text-[var(--brand-blue)] md:text-3xl">
+          <div className="w-full max-w-2xl rounded-xl border-2 border-[var(--brand-blue)]/20 bg-white/95 px-6 py-12 text-center shadow-[var(--shadow-sm)] backdrop-blur-sm sm:px-8 sm:py-16">
+            <h2 className="max-w-3xl mx-auto text-[2.2rem] font-bold text-[var(--brand-blue)] md:text-[2.31rem] lg:text-[2.48rem]">
               {site.ctaBand.headline}
             </h2>
-            <p className="mt-4 text-lg text-[var(--text)]">
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-[var(--text)]">
               {site.ctaBand.subhead}
             </p>
             <div className="mt-8">

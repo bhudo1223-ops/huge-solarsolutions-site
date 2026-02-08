@@ -28,8 +28,6 @@ const schema = z.object({
   motivations: z.array(z.string()).optional(),
   batteryInterest: z.string().optional(),
   communitySolarInterest: z.string().optional(),
-  nonBindingAgreed: z.boolean().refine((v) => v === true, { message: "You must agree to this" }),
-  feasibilityAuthorized: z.boolean().refine((v) => v === true, { message: "You must agree to this" }),
   contactMethod: z.string().optional(),
   preferredTime: z.string().optional(),
 });
@@ -47,10 +45,6 @@ export function SubmitBuildingForm() {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      nonBindingAgreed: false,
-      feasibilityAuthorized: false,
-    },
   });
 
   const motivations = watch("motivations") ?? [];
@@ -73,8 +67,6 @@ export function SubmitBuildingForm() {
       motivations: data.motivations?.length ? data.motivations : undefined,
       batteryInterest: data.batteryInterest,
       communitySolarInterest: data.communitySolarInterest,
-      nonBindingAgreed: true,
-      feasibilityAuthorized: true,
       contactMethod: data.contactMethod,
       preferredTime: data.preferredTime,
     };
@@ -126,7 +118,7 @@ export function SubmitBuildingForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {/* Required */}
       <div className="space-y-6">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-lg font-semibold text-[var(--text)]">
           Contact Information
         </h2>
         <FormField label="Full name" htmlFor="fullName" required error={errors.fullName?.message}>
@@ -150,7 +142,7 @@ export function SubmitBuildingForm() {
       </div>
 
       <div className="space-y-6">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-lg font-semibold text-[var(--text)]">
           Building Details
         </h2>
         <FormField label="Building address" htmlFor="buildingAddress" required error={errors.buildingAddress?.message}>
@@ -201,7 +193,7 @@ export function SubmitBuildingForm() {
       </div>
 
       <div className="space-y-6">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-lg font-semibold text-[var(--text)]">
           Utility & Usage
         </h2>
         <FormField label="Utility provider" htmlFor="utilityProvider">
@@ -227,7 +219,7 @@ export function SubmitBuildingForm() {
       </div>
 
       <div className="space-y-6">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-lg font-semibold text-[var(--text)]">
           Interest
         </h2>
         <FormField label="Primary motivation(s)" htmlFor="motivations">
@@ -240,7 +232,7 @@ export function SubmitBuildingForm() {
                   {...register("motivations")}
                   className="h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 dark:border-zinc-600 dark:focus:ring-zinc-100"
                 />
-                <span className="text-sm text-zinc-700 dark:text-zinc-300">{m}</span>
+                <span className="text-sm text-[var(--text)]">{m}</span>
               </label>
             ))}
           </div>
@@ -268,7 +260,7 @@ export function SubmitBuildingForm() {
       </div>
 
       <div className="space-y-6">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-lg font-semibold text-[var(--text)]">
           Contact Preference
         </h2>
         <FormField label="Preferred contact method" htmlFor="contactMethod">
@@ -291,44 +283,6 @@ export function SubmitBuildingForm() {
             ))}
           </Select>
         </FormField>
-      </div>
-
-      <div className="space-y-6 rounded-lg border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900/50">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-          Permissions & Disclosures
-        </h2>
-        <div className="space-y-1.5">
-          <label className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="nonBindingAgreed"
-              {...register("nonBindingAgreed")}
-              className="mt-1 h-4 w-4 shrink-0 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 dark:border-zinc-600 dark:focus:ring-zinc-100"
-            />
-            <span className="text-sm text-zinc-700 dark:text-zinc-300">
-              This submission is non-binding. <span className="text-red-500">*</span>
-            </span>
-          </label>
-          {errors.nonBindingAgreed && (
-            <p className="text-sm text-red-500">{errors.nonBindingAgreed.message}</p>
-          )}
-        </div>
-        <div className="space-y-1.5">
-          <label className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="feasibilityAuthorized"
-              {...register("feasibilityAuthorized")}
-              className="mt-1 h-4 w-4 shrink-0 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 dark:border-zinc-600 dark:focus:ring-zinc-100"
-            />
-            <span className="text-sm text-zinc-700 dark:text-zinc-300">
-              I authorize {site.legalEntity} to perform a preliminary feasibility evaluation for this site. <span className="text-red-500">*</span>
-            </span>
-          </label>
-          {errors.feasibilityAuthorized && (
-            <p className="text-sm text-red-500">{errors.feasibilityAuthorized.message}</p>
-          )}
-        </div>
       </div>
 
       <Button type="submit" loading={status === "loading"}>

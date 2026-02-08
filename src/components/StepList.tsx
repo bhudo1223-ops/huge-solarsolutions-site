@@ -18,7 +18,7 @@ export function StepList() {
             <h3 className="text-base font-semibold text-[var(--brand-blue)]">
               {step.title}
             </h3>
-            <p className="mt-1 text-[var(--text)]">
+            <p className="mt-1 leading-relaxed text-[var(--text)]">
               {step.description}
             </p>
           </div>

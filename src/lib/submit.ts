@@ -25,8 +25,6 @@ export interface LeadFormData {
   motivations?: string[];
   batteryInterest?: string;
   communitySolarInterest?: string;
-  nonBindingAgreed?: boolean;
-  feasibilityAuthorized?: boolean;
   contactMethod?: string;
   preferredTime?: string;
 }
