@@ -84,7 +84,7 @@ export const site = {
   },
 
   whySolar: {
-    headline: "Why property owners choose us",
+    headline: "What we provide",
     intro:
       "We cut energy costs and keep your involvement minimal. No capital outlay, no financing headaches, no ongoing oversight. You get savings without the complexity.",
     items: [
