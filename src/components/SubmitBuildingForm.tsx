@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +12,14 @@ import { Input } from "./Input";
 import { Select } from "./Select";
 import { Textarea } from "./Textarea";
 import { FormField } from "./FormField";
+
+function CheckIcon() {
+  return (
+    <svg className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
 
 const schema = z.object({
   fullName: z.string().min(1, "Full name is required"),
@@ -35,7 +44,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export function SubmitBuildingForm() {
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "failure">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "failure" | "rate-limited">("idle");
   const [mailtoFallback, setMailtoFallback] = useState<string>("");
 
   const {
@@ -77,20 +86,56 @@ export function SubmitBuildingForm() {
       setStatus("success");
     } else {
       setMailtoFallback(result.mailtoFallback);
-      setStatus("failure");
+      setStatus(result.rateLimited ? "rate-limited" : "failure");
     }
   };
 
   if (status === "success") {
     return (
-      <div className="rounded-xl border border-green-200 bg-green-50 p-8 text-center dark:border-green-900 dark:bg-green-950/30">
-        <h3 className="text-xl font-semibold text-green-900 dark:text-green-100">
-          Thank You
+      <div className="space-y-6">
+        <div className="flex items-start gap-3">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/40">
+            <CheckIcon />
+          </span>
+          <div>
+            <h2 className="text-xl font-semibold text-[var(--text)]">
+              Submission received
+            </h2>
+            <p className="mt-1 text-[var(--text-muted)]">
+              We&apos;ll review the details and reach out shortly.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3 pt-2">
+          <Button
+            type="button"
+            onClick={() => setStatus("idle")}
+          >
+            Submit another building
+          </Button>
+          <Link
+            href="/"
+            className="inline-flex h-11 items-center rounded-xl border border-[var(--border)] bg-transparent px-6 py-3 text-[var(--text)] hover:bg-[var(--bg-alt)]"
+          >
+            Back to home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === "rate-limited") {
+    return (
+      <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 dark:border-amber-900 dark:bg-amber-950/30">
+        <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100">
+          Too many submissions
         </h3>
-        <p className="mt-4 text-green-800 dark:text-green-200">
-          Your building submission has been received. We&apos;ll review the details and
-          reach out shortly.
+        <p className="mt-2 text-amber-800 dark:text-amber-200">
+          Please try again in a few minutes.
         </p>
+        <Link href="/" className="mt-4 inline-block text-[var(--brand-blue)] hover:underline">
+          Back to home
+        </Link>
       </div>
     );
   }

@@ -2,11 +2,7 @@ import { site } from "@/src/content/site";
 
 /**
  * Form submission adapter. Supports lead (building EOI) and contact forms.
- * Reads endpoints from env vars. Falls back to API route, then mailto.
- *
- * Env vars (optional):
- * - NEXT_PUBLIC_FORMSPREE_LEAD_ENDPOINT
- * - NEXT_PUBLIC_FORMSPREE_CONTACT_ENDPOINT
+ * Submits to API routes (which rate limit and proxy to Formspree).
  */
 
 export interface LeadFormData {
@@ -38,27 +34,28 @@ export interface ContactFormData {
 
 export type SubmitResult =
   | { success: true }
-  | { success: false; mailtoFallback: string };
+  | { success: false; mailtoFallback: string; rateLimited?: boolean };
 
-const LEAD_ENDPOINT =
-  process.env.NEXT_PUBLIC_FORMSPREE_LEAD_ENDPOINT || "/api/submit-lead";
-const CONTACT_ENDPOINT =
-  process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_ENDPOINT || "/api/submit-contact";
+// Post to our API routes so rate limiting applies; API proxies to Formspree.
+const LEAD_ENDPOINT = "/api/submit-lead";
+const CONTACT_ENDPOINT = "/api/submit-contact";
 
 async function trySubmit(
   endpoint: string,
   payload: Record<string, unknown>
-): Promise<boolean> {
+): Promise<{ ok: boolean; status: number }> {
   try {
     const res = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify(payload),
     });
-
-    return res.ok;
+    return { ok: res.ok, status: res.status };
   } catch {
-    return false;
+    return { ok: false, status: 0 };
   }
 }
 
@@ -68,13 +65,13 @@ export async function submitLead(formData: LeadFormData): Promise<SubmitResult> 
     ...formData,
   };
 
-  if (await trySubmit(LEAD_ENDPOINT, payload)) {
-    return { success: true };
-  }
+  const { ok, status } = await trySubmit(LEAD_ENDPOINT, payload);
+  if (ok) return { success: true };
 
   return {
     success: false,
     mailtoFallback: buildLeadMailto(formData),
+    rateLimited: status === 429,
   };
 }
 
@@ -86,13 +83,13 @@ export async function submitContact(
     ...formData,
   };
 
-  if (await trySubmit(CONTACT_ENDPOINT, payload)) {
-    return { success: true };
-  }
+  const { ok, status } = await trySubmit(CONTACT_ENDPOINT, payload);
+  if (ok) return { success: true };
 
   return {
     success: false,
     mailtoFallback: buildContactMailto(formData),
+    rateLimited: status === 429,
   };
 }
 
